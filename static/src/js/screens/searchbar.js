@@ -1,3 +1,4 @@
+/** @odoo-module */
 import { patch } from "@web/core/utils/patch";
 import { _t } from "@web/core/l10n/translation";
 import {SearchBar} from "@point_of_sale/app/screens/ticket_screen/search_bar/search_bar";
@@ -28,19 +29,10 @@ patch(SearchBar.prototype,{
         }
     },
     
-    // Override onInput to handle real-time search clearing
-    onInput(event) {
-        // Call the original onInput method first
-        super.onInput(event);
-        
-        // If the input becomes empty, immediately trigger empty search to show no orders
-        if (event.target.value.trim() === "") {
-            console.log("Input cleared - showing no orders");
-            this.props.onSearch({ 
-                fieldName: this.searchFieldsList[this.state.selectedSearchFieldId] || this.searchFieldsList[0], 
-                searchTerm: "" 
-            });
-        }
+    // Override _onClickSearchField to handle real-time search clearing
+    _onClickSearchField(fieldName) {
+        this.state.showSearchFields = false;
+        this.props.onSearch({ fieldName, searchTerm: this.state.searchInput });
     }
     
    

@@ -1,10 +1,11 @@
+/** @odoo-module */
 import { patch } from "@web/core/utils/patch";
 import { _t } from "@web/core/l10n/translation";
 import {TicketScreen} from "@point_of_sale/app/screens/ticket_screen/ticket_screen";
 
 patch(TicketScreen.prototype,{
     async onFilterSelected(selectedFilter) {
-        this.state.filter = selectedFilter;
+        this._state.ui.filter = selectedFilter;
         
         if (this.pos.config.prevent_display_orders) {
             console.log("Prevent display orders is enabled");
@@ -12,16 +13,16 @@ patch(TicketScreen.prototype,{
            
         } else {
             // Normal behavior when prevent_display_orders is disabled
-            if (this.state.filter == "SYNCED") {
+            if (this._state.ui.filter == "SYNCED") {
                 await this._fetchSyncedOrders();
             }
         }
     },
 
     async onSearch(search) {
-        this.state.search = search;
-        this.state.page = 1;
-        if (this.state.filter == "SYNCED") {
+        Object.assign(this._state.ui.searchDetails, search);
+        this._state.syncedOrders.currentPage = 1;
+        if (this._state.ui.filter == "SYNCED") {
             await this._fetchSyncedOrders();
         }
     },
@@ -30,9 +31,9 @@ patch(TicketScreen.prototype,{
     getFilteredOrderList() {
         if (this.pos.config.prevent_display_orders) {
             // If prevent_display_orders is enabled
-            if (this.state.search.searchTerm && this.state.search.searchTerm.trim() !== '') {
+            if (this._state.ui.searchDetails.searchTerm && this._state.ui.searchDetails.searchTerm.trim() !== '') {
                 // When there's a search term, filter the results
-                console.log("Search term found:", this.state.search.searchTerm, "- filtering orders");
+                console.log("Search term found:", this._state.ui.searchDetails.searchTerm, "- filtering orders");
                 return super.getFilteredOrderList();
             } else {
                 // When search is empty, show no orders

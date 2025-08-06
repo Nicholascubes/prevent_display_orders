@@ -1,9 +1,10 @@
+/** @odoo-module */
 import { patch } from "@web/core/utils/patch";
-import { ControlButtons } from "@point_of_sale/app/screens/product_screen/control_buttons/control_buttons";
+import { RefundButton } from "@point_of_sale/app/screens/product_screen/control_buttons/refund_button/refund_button";
 
-patch(ControlButtons.prototype, {
-    // Override the clickRefund method to handle empty orders list
-    clickRefund() {
+patch(RefundButton.prototype, {
+    // Override the click method to handle empty orders list
+    click() {
         const order = this.pos.get_order();
         const partner = order.get_partner();
         const searchDetails = partner ? { fieldName: "PARTNER", searchTerm: partner.name } : {};
@@ -12,20 +13,14 @@ patch(ControlButtons.prototype, {
             // If prevent_display_orders is enabled, show empty orders list
             console.log("Refund button clicked - showing empty orders list");
             this.pos.showScreen("TicketScreen", {
-                stateOverride: {
-                    filter: "",
-                    search: {},
-                    destinationOrder: order,
-                },
+                ui: { filter: "", searchDetails: {} },
+                destinationOrder: order,
             });
         } else {
             // Normal behavior when prevent_display_orders is disabled
             this.pos.showScreen("TicketScreen", {
-                stateOverride: {
-                    filter: "SYNCED",
-                    search: searchDetails,
-                    destinationOrder: order,
-                },
+                ui: { filter: "SYNCED", searchDetails },
+                destinationOrder: order,
             });
         }
     }

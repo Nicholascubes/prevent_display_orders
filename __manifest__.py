@@ -14,10 +14,10 @@
     'website': "https://www.cubes.com",
 
     # Categories can be used to filter modules in modules listing
-    # Check https://github.com/odoo/odoo/blob/15.0/odoo/addons/base/data/ir_module_category_data.xml
+    # Check https://github.com/odoo/odoo/blob/17.0/odoo/addons/base/data/ir_module_category_data.xml
     # for the full list
-    'category': 'Point of Sale',
-    'version': '0.1',
+    'category': 'Sales/Point of Sale',
+    'version': '17.0.1.0.0',
 
     # any module necessary for this one to work correctly
     'depends': ['base','point_of_sale'],
@@ -37,6 +37,9 @@
             
         ],
     },
-    
+    'installable': True,
+    'application': False,
+    'auto_install': False,
+    'license': 'LGPL-3',
 }
 
